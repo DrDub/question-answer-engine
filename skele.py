@@ -3,9 +3,11 @@
 
 ### Imports ###
 import nltk
+from nltk.corpus import brown
 import re
 import sys
 import os
+import regexp_answer
 ###############
 
 if(len(sys.argv) < 2):
@@ -26,7 +28,13 @@ regexp_tagger = nltk.RegexpTagger(
 	(r'.*', 'NN')                      # nouns (default)
 ])
 
+
+training_data = brown.tagged_sents()[:100]
 	
+
+unigram_tagger = nltk.UnigramTagger(training_data, backoff=regexp_tagger)
+bigram_tagger = nltk.BigramTagger(training_data, backoff=unigram_tagger)
+trigram_tagger = nltk.TrigramTagger(training_data, backoff=bigram_tagger)
 	
 	
 ###############
@@ -44,11 +52,16 @@ def main():
 	### Get a list of words again (will separate punctuation and whatnot)
 	listOfWords = tokenizer.tokenize(string)
 	
-	### Get POS
-	result = regexp_tagger.tag(listOfWords)
+	### Create tagger and get POS ###
+	
+	result = trigram_tagger.tag(listOfWords)
+	
+	### Answer Stuff ###
+	### Regexp Answer ###
+	regexp_answer.regexp_answer(result)
 	
 	# Print results
-	print result
+	#print result
 	
 
 ### If running as a console script ###
