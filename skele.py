@@ -8,10 +8,11 @@ import re
 import sys
 import os
 import regexp_answer
+import pickle
 ###############
 
-if(len(sys.argv) < 2):
-	print "Please pass a string as command line arguments!"
+if(len(sys.argv) != 3):
+	print "Please call skele.py as follows: python skele.py <article.txt> <question.txt>!"
 	exit(1)
 	
 	
@@ -29,28 +30,23 @@ regexp_tagger = nltk.RegexpTagger(
 ])
 
 
-training_data = brown.tagged_sents()[:100]
-	
 
-unigram_tagger = nltk.UnigramTagger(training_data, backoff=regexp_tagger)
-bigram_tagger = nltk.BigramTagger(training_data, backoff=unigram_tagger)
-trigram_tagger = nltk.TrigramTagger(training_data, backoff=bigram_tagger)
+unigram_tagger = pickle.load(open("unigram_tagger.bin", "r"))
+bigram_tagger = pickle.load(open("bigram_tagger.bin", "r"))
+trigram_tagger = pickle.load(open("trigram_tagger.bin", "r"))
 	
 	
 ###############
 def main():
-	# Join the arguments to form a string
-	# Later, we'll take something that isn't a command line string
-	string = list(sys.argv[1:])
-	string = " ".join(string)
-	print "Your string is: %s" % string
+	
+	question = open(sys.argv[2], "r").readline()
 	
 	# Now parse it and then get parts of speech
 	#tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 	### The PunktStringTokenizer is nice, will find sentences, we'll need this later
 	tokenizer = nltk.PunktWordTokenizer()
 	### Get a list of words again (will separate punctuation and whatnot)
-	listOfWords = tokenizer.tokenize(string)
+	listOfWords = tokenizer.tokenize(question)
 	
 	### Create tagger and get POS ###
 	
@@ -58,7 +54,7 @@ def main():
 	
 	### Answer Stuff ###
 	### Regexp Answer ###
-	regexp_answer.regexp_answer(result)
+	regexp_answer.regexp_answer(question, result, open(sys.argv[1], "r"))
 	
 	# Print results
 	#print result
