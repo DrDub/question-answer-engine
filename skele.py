@@ -7,7 +7,7 @@ from nltk.corpus import brown
 import re
 import sys
 import os
-import regexp_answer
+import table_answer
 import pickle
 ###############
 
@@ -40,13 +40,16 @@ trigram_tagger = pickle.load(open("trigram_tagger.bin", "r"))
 def main():
 	
 	question = open(sys.argv[2], "r").readline()
+	article = open(sys.argv[1], "r")
 	
 	# Now parse it and then get parts of speech
-	#tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+	sentTokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+	sentenceList = sentTokenizer.tokenize(article.read())
+	print "DEBUG: " + str(sentenceList)
 	### The PunktStringTokenizer is nice, will find sentences, we'll need this later
-	tokenizer = nltk.PunktWordTokenizer()
+	wordTokenizer = nltk.PunktWordTokenizer()
 	### Get a list of words again (will separate punctuation and whatnot)
-	listOfWords = tokenizer.tokenize(question)
+	listOfWords = wordTokenizer.tokenize(question)
 	
 	### Create tagger and get POS ###
 	
@@ -54,7 +57,8 @@ def main():
 	
 	### Answer Stuff ###
 	### Regexp Answer ###
-	regexp_answer.regexp_answer(question, result, open(sys.argv[1], "r"))
+	#regexp_answer.regexp_answer(question, result, open(sys.argv[1], "r"))
+	#table_answer.run(listOfWords, result, )
 	
 	# Print results
 	#print result
