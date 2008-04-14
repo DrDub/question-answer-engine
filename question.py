@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: cp1252 -*-
 
 
 ### Imports ###
@@ -40,27 +41,37 @@ def question():
 	articleFile = "article.txt.sample" #sys.argv[1]
 
 	### Read the article ###
-	article = "The apple is the pomaceous fruit of the apple tree, species Malus domestica in the rose family Rosaceae" #open(articleFile, "r").read()
+	article = open(articleFile, "r").read()
 	sentences = stokenizer.tokenize(article)
 	words = [wtokenizer.tokenize(sentence) for sentence in sentences]
 	stags = [trigram_tagger.tag(word) for word in words]
 
-	cfgFile = "grammar.rules"
-	cfg = open(cfgFile, "r").read()
-	grammarstags = []
+	r1 = re.compile("([^; ]*) DT;([^ ]*) NN;([^ ]*) VBD;([^ ]*) IN;([^ ]*) NNP")
+
 	for stag in stags:
-		for tag in stag:
-			grammarstags += [tag]
-	grammarstags = list(set(grammarstags))
-	for (word, tag) in grammarstags:
-		cfg += tag + ' -> "' + word + '"\n'
-	print cfg
-	nltk.cfg._PARSE_CFG_RE = re.compile(
-                r'''^\s*([\w,]+(?:[-/]\w+)?)\s*(?:[-=]+>)\s*(?:("[^"]+"|'[^']+'|[,\w-]+(?:/[\w-]+)?|\|)\s*)*$''',re.VERBOSE)
-	nltk.cfg._SPLIT_CFG_RE = re.compile(r'''([\w,]+(?:[/-]\w+)?|[-=]+>|"[^"]+"|'[^']+'|\|)''') 
-	rd_parser = nltk.RecursiveDescentParser(nltk.parse_cfg(cfg))
-	print words[0]
-	print rd_parser.nbest_parse(words[0])
+                s = ";".join([" ".join(st) for st in stag])
+                m = r1.findall(s)
+                if len(m)>0:
+                        print ' '.join(['Did',m[0][0],m[0][1],m[0][2][0:-1],m[0][3],m[0][4]])+'?'
+                
+
+	#cfgFile = "grammar.rules"
+	#cfg = open(cfgFile, "r").read()
+	#grammarstags = []
+	#for stag in stags:
+	#	for tag in stag:
+	#		grammarstags += [tag]
+	#grammarstags = list(set(grammarstags))
+	#for (word, tag) in grammarstags:
+	#	cfg += tag + ' -> "' + word + '"\n'
+	#print cfg
+	#nltk.cfg._PARSE_CFG_RE = re.compile(
+        #        r'''^\s*([\w,]+(?:[-/]\w+)?)\s*(?:[-=]+>)\s*(?:("[^"]+"|'[^']+'|[,\w-]+(?:/[\w-]+)?|\|)\s*)*$'''
+        #        ,re.VERBOSE)
+	#nltk.cfg._SPLIT_CFG_RE = re.compile(r'''([\w,]+(?:[/-]\w+)?|[-=]+>|"[^"]+"|'[^']+'|\|)''') 
+	#rd_parser = nltk.RecursiveDescentParser(nltk.parse_cfg(cfg))
+	#print words[0]
+        #print rd_parser.nbest_parse(words[0])
 	
 	
 	### Print the length of the article in words (just as a sanity check here) ###
