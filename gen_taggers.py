@@ -1,6 +1,6 @@
 ### Imports ###
 import nltk
-from nltk.corpus import brown
+from nltk.corpus import treebank
 import re
 import sys
 import os
@@ -22,7 +22,7 @@ def main():
            (r'.*', 'NN')                      # nouns (default)
     ])
 
-    training_data = brown.tagged_sents()
+    training_data = treebank.tagged_sents()
            
     unigram_tagger = nltk.UnigramTagger(training_data, backoff=regexp_tagger)
     bigram_tagger = nltk.BigramTagger(training_data, backoff=unigram_tagger)
