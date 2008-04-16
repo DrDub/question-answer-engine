@@ -45,24 +45,24 @@ def main():
 	article = open(sys.argv[1], "r")
 	
 	# Now parse it and then get parts of speech
-	sentTokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-	sentenceList = sentTokenizer.tokenize(article.read())
+	#sentTokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+	#sentenceList = sentTokenizer.tokenize(article.read())
 	#print "DEBUG: " + str(sentenceList)
 	### The PunktStringTokenizer is nice, will find sentences, we'll need this later
-	wordTokenizer = nltk.PunktWordTokenizer()
+	#wordTokenizer = nltk.PunktWordTokenizer()
 
 	for question in questions:
 		### Get a list of words again (will separate punctuation and whatnot)
-		listOfWords = wordTokenizer.tokenize(question)
+		#listOfWords = wordTokenizer.tokenize(question)
 		
 		### Create tagger and get POS ###
 		
-		result = trigram_tagger.tag(listOfWords)
+		#result = trigram_tagger.tag(listOfWords)
 		
 		### Answer Stuff ###
 		### Regexp Answer ###
 		#regexp_answer.regexp_answer(question, result, open(sys.argv[1], "r"))
-		csim_answer.csim_answer(question, open(sys.argv[1], "r"))
+		csim_answer.csim_answer(question, article)
 	#table_answer.run(listOfWords, result, )
 	
 	# Print results
