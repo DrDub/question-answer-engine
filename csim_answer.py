@@ -54,15 +54,30 @@ def csim_answer(question, articleFile):
 	# We can then use this vector to compare it against the question vector
 	# and we will store this value in our sim_list
 	for sent in article_sents:
-		#print sent
+                sent_parts = tokenizer.tokenize(sent)
+                stems = get_stems(sent_parts)
+                
+                if len(stems) > 12:
+                        for i in range(len(stems)-11):
 		
-		vector = get_vector(get_stems(sent))
+                		vector = get_vector(stems[i:i+12])
 		
-		cs = calc_sim(q_vector, vector)
+                		cs = calc_sim(q_vector, vector)
 
-		if cs > maxSim:
-			maxSim = cs
-			maxAns = sent
+                		if cs > maxSim:
+                			maxSim = cs
+                			maxAns = " ".join(sent_parts[i:i+12])
+                else:
+                                
+        		#print sent
+		
+        		vector = get_vector(stems)
+		
+        		cs = calc_sim(q_vector, vector)
+
+        		if cs > maxSim:
+        			maxSim = cs
+        			maxAns = sent
 		
 		#print "\n"
 	print maxAns
@@ -75,8 +90,8 @@ def csim_answer(question, articleFile):
 # words from the sentence. 
 #
 #-------------------------------------------------------------------------------
-def get_stems(sent):
-	sent_parts = tokenizer.tokenize(sent)
+def get_stems(sent_parts):
+	
 	stems = []
 	
 	for part in sent_parts:
